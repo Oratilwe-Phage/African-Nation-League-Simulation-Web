@@ -1,14 +1,20 @@
+// routes/tournamentRoutes.js
 import express from "express";
 import {
-  createTournament,
   getAllTournaments,
-  simulateNextRound,
+  createTournament,
+  simulateNextRound, 
 } from "../controllers/tournamentController.js";
 
 const router = express.Router();
 
+// GET all tournaments
 router.get("/", getAllTournaments);
-router.post("/create", createTournament);
+
+// POST: create tournament
+router.post("/", createTournament);
+
+// POST: simulate next round
 router.post("/simulate-round", simulateNextRound);
 
 export default router;
