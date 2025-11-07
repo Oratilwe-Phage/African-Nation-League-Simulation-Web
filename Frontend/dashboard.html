@@ -6,217 +6,96 @@
   <title>Administrator Dashboard | African Nations League</title>
   <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background: #f9fff9;
+      background-color: #a0a49f;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
 
-    /* Navbar */
-    nav.navbar {
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #f9f9f9;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0a3d2d;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
       display: flex;
       justify-content: space-between;
+      margin-bottom: 15px;
       align-items: center;
-      background: linear-gradient(90deg, #006400, #32cd32);
-      color: #fff;
-      padding: 15px 30px;
-    }
-    nav button {
-      background: #fff;
-      color: #006400;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    nav button:hover {
-      background: #32cd32;
-      color: #fff;
     }
 
-    /* Analytics Cards */
-    main.analytics-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-      flex-wrap: wrap;
-    }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 250px;
-      text-align: center;
-    }
-    .card h3 {
-      color: #006400;
-    }
-    .card p {
-      font-size: 1.5em;
-      font-weight: 700;
-      margin-top: 10px;
-    }
-
-    /* Simulation Container */
-    section.simulation-container {
-      margin: 30px auto;
-      padding: 20px;
-      max-width: 500px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    section select,
-    section button {
-      margin-top: 10px;
+    select, button {
+      width: 48%;
       padding: 10px;
-      width: 100%;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 1em;
-    }
-    section button {
-      background: linear-gradient(90deg, #228b22, #7fff00);
-      color: #fff;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    section button:hover {
-      background: linear-gradient(90deg, #006400, #32cd32);
-    }
-    section button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
+      font-size: 16px;
     }
 
-    /* Match History */
-    section.match-history {
-      margin: 40px auto;
-      max-width: 900px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+    button {
+      background-color: #0a3d2d;
+      color: #fff;
+      cursor: pointer;
+      border: none;
     }
-    section.match-history h3 {
-      text-align: center;
-      color: #006400;
+
+    button:hover {
+      background-color: #136b4a;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      margin-top: 30px;
+      text-align: center;
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
     }
-    table th,
-    table td {
+
+    th, td {
       border: 1px solid #ddd;
       padding: 10px;
-      text-align: center;
     }
-    table th {
-      background: #006400;
+
+    th {
+      background-color: #0a3d2d;
       color: #fff;
     }
-    table tr:nth-child(even) {
-      background: #f9f9f9;
+
+    .winner {
+      font-weight: bold;
+      color: #0a3d2d;
     }
   </style>
 </head>
 
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <h2>African Nations League Dashboard</h2>
-    <div>
-      <button id="logoutBtn" onclick="logoutAdmin()">Logout</button>
+  <div class="container">
+    <h1>Simulate a Match</h1>
+
+    <div class="form-group">
+      <select id="homeFederation"></select>
+      <select id="awayFederation"></select>
     </div>
-  </nav>
 
-  <script>
-    // Redirect to login if not logged in
-    if (!localStorage.getItem("isAdminLoggedIn")) {
-      Swal.fire({
-        icon: "warning",
-        title: "Access Restricted",
-        text: "Please log in as an administrator to access the dashboard.",
-        confirmButtonText: "OK",
-      }).then(() => {
-        window.location.href = "adminLogin.html";
-      });
-    }
-
-    // Logout admin
-    function logoutAdmin() {
-      localStorage.removeItem("isAdminLoggedIn");
-      Swal.fire({
-        icon: "success",
-        title: "Logged Out",
-        text: "You have successfully logged out.",
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        window.location.href = "adminLogin.html";
-      });
-    }
-  </script>
-
-  <!-- ANALYTICS CARDS -->
-  <main class="analytics-container">
-    <div class="card">
-      <h3>Total Federations</h3>
-      <p id="totalFederations">0</p>
+    <div class="form-group" style="justify-content: center;">
+      <button id="simulateBtn">Simulate Match</button>
     </div>
-    <div class="card">
-      <h3>Total Matches</h3>
-      <p id="totalMatches">0</p>
-    </div>
-    <div class="card">
-      <h3>Average Team Rating</h3>
-      <p id="avgRating">0</p>
-    </div>
-  </main>
 
-  <!-- MATCH SIMULATION -->
-  <section class="simulation-container">
-    <h3>Simulate a Match</h3>
-
-    <label for="homeFederationId">Home Federation:</label>
-    <select id="homeFederationId">
-      <option value="">Select Home Team</option>
-    </select>
-
-    <label for="awayFederationId">Away Federation:</label>
-    <select id="awayFederationId">
-      <option value="">Select Away Team</option>
-    </select>
-
-    <label for="sortFederations">Sort Federations By:</label>
-<select id="sortFederations">
-  <option value="name">Name (A–Z)</option>
-  <option value="rating">Rating (High → Low)</option>
-  <option value="position">Table Position (1st → Last)</option>
-</select>
-
-    <button id="simulateMatchBtn" disabled>Simulate Match</button>
-    <p id="simulationNotice" style="color: red; font-weight: 600; display: none;">
-      You need at least 8 federations registered before simulating matches.
-    </p>
-  </section>
-
-  <!-- MATCH HISTORY -->
-  <section class="match-history">
-    <h3>Match History</h3>
-    <table id="matchHistoryTable">
+    <table id="matchesTable">
       <thead>
         <tr>
           <th>Date</th>
@@ -226,19 +105,111 @@
           <th>Winner</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td colspan="5">No matches simulated yet.</td>
-        </tr>
+      <tbody id="matchesBody">
+        <!-- Matches will be inserted here -->
       </tbody>
     </table>
-  </section>
+  </div>
 
-  <!-- LINK JS -->
-  <script type="module" src="js/dashboard.js"></script>
-  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+  <script>
+    const apiBase = "https://african-nation-league-simulation-web-1.onrender.com/api";
+
+    // Load federations
+    async function loadFederations() {
+      try {
+        const res = await fetch(`${apiBase}/federations`);
+        const federations = await res.json();
+
+        const homeSelect = document.getElementById("homeFederation");
+        const awaySelect = document.getElementById("awayFederation");
+
+        federations.forEach(fed => {
+          const option1 = document.createElement("option");
+          option1.value = fed._id;
+          option1.textContent = `${fed.country} (${Math.round(fed.rating)})`;
+          homeSelect.appendChild(option1);
+
+          const option2 = document.createElement("option");
+          option2.value = fed._id;
+          option2.textContent = `${fed.country} (${Math.round(fed.rating)})`;
+          awaySelect.appendChild(option2);
+        });
+      } catch (err) {
+        console.error("Failed to load federations:", err);
+        Swal.fire("Error", "Could not load federations.", "error");
+      }
+    }
+
+    // Format date nicely
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return !isNaN(date) ? date.toLocaleString() : "N/A";
+    }
+
+    // Add match row
+    function addMatchRow(match) {
+      const tableBody = document.getElementById("matchesBody");
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${formatDate(match.date)}</td>
+        <td>${match.homeTeam}</td>
+        <td>${match.homeScore} - ${match.awayScore}</td>
+        <td>${match.awayTeam}</td>
+        <td class="winner">${match.winner}</td>
+      `;
+
+      tableBody.prepend(row);
+    }
+
+    // Simulate match
+    async function simulateMatch() {
+      const homeId = document.getElementById("homeFederation").value;
+      const awayId = document.getElementById("awayFederation").value;
+
+      if (!homeId || !awayId) {
+        Swal.fire("Warning", "Please select both federations.", "warning");
+        return;
+      }
+
+      if (homeId === awayId) {
+        Swal.fire("Error", "Home and Away teams must be different.", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${apiBase}/federations/simulate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ homeId, awayId }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to simulate match.");
+        }
+
+        Swal.fire({
+          icon: "success",
+          title: "Match Simulated!",
+          text: `${data.match.homeTeam} ${data.match.homeScore} - ${data.match.awayScore} ${data.match.awayTeam}\nWinner: ${data.match.winner}`,
+        });
+
+        addMatchRow(data.match);
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message || "Failed to simulate match.", "error");
+      }
+    }
+
+    // Init
+    document.getElementById("simulateBtn").addEventListener("click", simulateMatch);
+    window.addEventListener("DOMContentLoaded", loadFederations);
+  </script>
 </body>
 </html>
+
 
 
 

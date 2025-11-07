@@ -57,6 +57,7 @@ const simulateMatch = async (home, away) => {
     winner.country
   );
 
+  // 🆕 Added `date` field
   const match = await Match.create({
     homeTeam: home._id,
     awayTeam: away._id,
@@ -64,13 +65,17 @@ const simulateMatch = async (home, away) => {
     awayScore,
     winner: winner._id,
     round: "Friendly",
+    date: new Date(), // ✅ ensures valid date
     commentary,
   });
 
-  return await match.populate(
+  // 🆕 Populate to return readable info
+  const populatedMatch = await match.populate(
     "homeTeam awayTeam winner",
     "country rating"
   );
+
+  return populatedMatch;
 };
 
 /**
@@ -146,14 +151,25 @@ export const simulateFederationMatch = async (req, res, next) => {
 
     const match = await simulateMatch(home, away);
 
+    // 🆕 Return clean object with country names (not IDs)
     res.json({
       message: "Friendly match simulated successfully.",
-      match,
+      match: {
+        _id: match._id,
+        date: match.date,
+        homeTeam: match.homeTeam.country,
+        awayTeam: match.awayTeam.country,
+        homeScore: match.homeScore,
+        awayScore: match.awayScore,
+        winner: match.winner.country,
+        commentary: match.commentary,
+      },
     });
   } catch (err) {
     next(err);
   }
 };
+
 
 
 
