@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/match/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ homeFederationId, awayFederationId }),
+        body: JSON.stringify({ homeId: homeFederationId, awayId: awayFederationId }),
       });
 
       const data = await res.json();
