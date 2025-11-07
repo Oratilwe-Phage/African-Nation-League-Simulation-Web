@@ -7,54 +7,98 @@
   <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
+    /* General Page Styling */
     body {
-      background-color: #a0a49f;
-      font-family: Arial, sans-serif;
+      background-color: #f0f3f2;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
+      color: #333;
     }
 
+    /* Navbar */
+    .navbar {
+      background-color: #001f3f; /* Navy Blue */
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #00b894;
+    }
+
+    /* Container */
     .container {
       max-width: 1000px;
-      margin: 40px auto;
-      background: #f9f9f9;
+      margin: 60px auto;
+      background: #ffffff;
       border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      padding: 40px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
       text-align: center;
-      color: #0a3d2d;
-      margin-bottom: 20px;
+      color: #001f3f;
+      margin-bottom: 25px;
     }
 
+    /* Form */
     .form-group {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 15px;
-      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     select, button {
-      width: 48%;
-      padding: 10px;
+      flex: 1;
+      min-width: 48%;
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
+      margin-top: 10px;
     }
 
     button {
-      background-color: #0a3d2d;
+      background-color: #001f3f;
       color: #fff;
       cursor: pointer;
       border: none;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #136b4a;
+      background-color: #004080;
     }
 
+    /* Table */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -67,24 +111,58 @@
 
     th, td {
       border: 1px solid #ddd;
-      padding: 10px;
+      padding: 12px;
     }
 
     th {
-      background-color: #0a3d2d;
+      background-color: #001f3f;
       color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
     }
 
     .winner {
       font-weight: bold;
-      color: #0a3d2d;
+      color: #001f3f;
+    }
+
+    /* Back Button */
+    .back-btn {
+      display: inline-block;
+      background-color: #004080;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background-color 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      background-color: #0074d9;
     }
   </style>
 </head>
 
 <body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>African Nations League</h2>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="subscribe.html">Subscribe</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="tournament.html">Tournament</a>
+      <a href="match.html">Matches</a>
+    </div>
+  </nav>
+
   <div class="container">
-    <h1>Simulate a Match</h1>
+    <a href="index.html" class="back-btn">← Back</a>
+    <h1>Administrator Dashboard</h1>
 
     <div class="form-group">
       <select id="homeFederation"></select>
@@ -112,7 +190,7 @@
   </div>
 
   <script>
-    const apiBase = "https://african-nation-league-simulation-web-1.onrender.com/api";
+    const apiBase = "https://african-nation-league-simulation-web.onrender.com";
 
     // Load federations
     async function loadFederations() {
@@ -186,9 +264,7 @@
 
         const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to simulate match.");
-        }
+        if (!res.ok) throw new Error(data.message || "Failed to simulate match.");
 
         Swal.fire({
           icon: "success",
@@ -203,12 +279,12 @@
       }
     }
 
-    // Init
     document.getElementById("simulateBtn").addEventListener("click", simulateMatch);
     window.addEventListener("DOMContentLoaded", loadFederations);
   </script>
 </body>
 </html>
+
 
 
 

@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import connectDB from "./config/db.js";
 import federationRoutes from "./routes/federationRoutes.js";
 import tournamentRoutes from "./routes/tournamentRoutes.js";
@@ -17,32 +20,44 @@ connectDB();
 
 const app = express();
 
+// For __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// ✅ CORS setup
 app.use(
   cors({
     origin: [
       "https://african-nation-league-simulation-web.onrender.com",
-      "https://african-nation-league-simulation-web-1.onrender.com"
+      "https://african-nation-league-simulation-web-1.onrender.com",
     ],
     credentials: true,
   })
 );
 
-
 app.use(express.json());
 
-// API Routes
+// ✅ API Routes
 app.use("/api/federations", federationRoutes);
 app.use("/api/tournament", tournamentRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/subscribe", subscriberRoutes);
-app.use("/api/error", errorHandler);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// 404 Middleware
-app.use((req, res, next) => {
+// ✅ Static file serving (important for Render)
+app.use(express.static(path.join(__dirname, "public")));
+
+// ✅ Fallback for frontend routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// ✅ 404 and error handlers
+app.use("/api/error", errorHandler);
+
+app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
 
@@ -52,7 +67,8 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 
 
 
