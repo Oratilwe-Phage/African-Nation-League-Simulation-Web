@@ -12,40 +12,26 @@ const matchSchema = new mongoose.Schema(
       ref: "Federation",
       required: true,
     },
-    homeScore: {
-      type: Number,
-      required: true,
-    },
-    awayScore: {
-      type: Number,
-      required: true,
-    },
+    homeScore: { type: Number, required: true },
+    awayScore: { type: Number, required: true },
     winner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Federation",
-      required: true,
     },
     round: {
       type: String,
-      default: "Friendly",
-    },
-    date: {
-      type: Date,
-      default: Date.now, // ✅ ensures valid date automatically
+      enum: ["Quarter Final", "Semi Final", "Final"],
+      required: true,
     },
     commentary: {
       type: String,
-      default: "",
+      default: "No commentary available.",
     },
   },
-  {
-    timestamps: true, // ✅ also adds createdAt & updatedAt for records
-  }
+  { timestamps: true }
 );
 
 const Match = mongoose.model("Match", matchSchema);
-
 export default Match;
-
 
 
