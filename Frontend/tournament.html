@@ -107,39 +107,36 @@
   <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
 
   <script>
-    const API_BASE = "https://african-nation-league-simulation-web-1.onrender.com/api/tournament";
-
     const startBtn = document.getElementById("startTournamentBtn");
     const simulateBtn = document.getElementById("simulateRoundBtn");
     const bracketContainer = document.getElementById("bracketContainer");
     const championDiv = document.getElementById("champion");
-
     let currentTournament = null;
 
-    // Helper to handle API responses
+    // Handle API responses
     const handleResponse = async (res) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Unexpected server error");
       return data.tournament;
     };
 
-    // 🎯 Start Tournament
+    // Start tournament
     startBtn.addEventListener("click", async () => {
-      Swal.fire({ title: "Starting tournament...", didOpen: () => Swal.showLoading() });
-
       try {
-        const res = await fetch(`${API_BASE}/create`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: "African Nations League",
-            year: new Date().getFullYear(),
-          }),
-        });
+const result = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournaments", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: "African Nations League",
+    year: new Date().getFullYear()
+  }),
+});
+        const data = await result.json();
 
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
+        if (!result.ok) {
+          Swal.fire({ icon: "error", title: "Error", text: data.message });
+          return;
+        }
 
         currentTournament = data.tournament;
         Swal.fire({
@@ -147,7 +144,7 @@
           title: "Tournament Started!",
           text: data.message || "Quarter Finals generated.",
           timer: 2000,
-          showConfirmButton: false,
+          showConfirmButton: false
         });
 
         bracketContainer.style.display = "flex";
@@ -158,32 +155,28 @@
       }
     });
 
-    // ⚽ Simulate Next Round
-    simulateBtn.addEventListener("click", async () => {
-      Swal.fire({ title: "Simulating next round...", didOpen: () => Swal.showLoading() });
-
-      try {
-        const res = await fetch(`${API_BASE}/simulate-round`, { method: "POST" });
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
-
-        currentTournament = data.tournament;
-        Swal.fire({
-          icon: "info",
-          title: "Round Simulated!",
-          text: data.message,
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        displayBracket(currentTournament);
-      } catch (err) {
-        Swal.fire({ icon: "error", title: "Error", text: err.message });
-      }
+    // Simulate next round
+simulateBtn.addEventListener("click", async () => {
+  try {
+    const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate-round", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     });
+    currentTournament = await handleResponse(res); // ✅ use res here
+    Swal.fire({
+      icon: "info",
+      title: "Round Simulated!",
+      text: "Next round results generated.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    displayBracket(currentTournament);
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Error", text: err.message });
+  }
+});
 
-    // 🧩 Display tournament visually
+    // Display the tournament bracket visually
     function displayBracket(tournament) {
       bracketContainer.style.display = "flex";
 
@@ -213,7 +206,7 @@
         matchEl.classList.add("match");
         matchEl.innerHTML = `
           <p>${home} vs ${away}</p>
-          <p>Score: ${m.homeScore ?? 0} - ${m.awayScore ?? 0}</p>
+          <p>Score: ${m.homeScore} - ${m.awayScore}</p>
           <p class="winner">Winner: ${winner}</p>
           ${commentary ? `<p class="commentary">${commentary}</p>` : ""}
         `;
@@ -225,10 +218,10 @@
         simulateBtn.style.display = "none";
       }
     }
+  
   </script>
 </body>
 </html>
-
 
 
 
