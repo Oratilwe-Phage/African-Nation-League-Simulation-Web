@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - African Nations League</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>African Nations League</h2>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="subscribe.html">Subscribe</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="tournament.html">Tournament</a>
+      <a href="match.html">Matches</a>
+    </div>
+  </nav>
+
+  <!-- Login Form -->
+  <main class="container">
+    <h1>Admin Login</h1>
+    <form id="adminLoginForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter admin username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" required>
+
+      <button type="submit">Login</button>
+    </form>
+  </main>
+
+  <!-- Back Button -->
+  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+
+  <!-- Login Script -->
+<script>
+  document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("isAdminLoggedIn", "true");
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Redirecting to Admin Dashboard...",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+      } else {
+        Swal.fire("Error", data.message || "Invalid credentials", "error");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      Swal.fire("Error", "Unable to connect to server", "error");
+    }
+  });
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

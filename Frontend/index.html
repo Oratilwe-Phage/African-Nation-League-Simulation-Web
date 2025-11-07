@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>African Nations League</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>African Nations League</h2>
+    <div class="nav-links">
+      <a href="playerProfiles.html">Player Profiles</a>
+      <a href="subscribe.html">Subscribe</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="tournament.html">Tournament</a>
+      <a href="match.html">Matches</a>
+      <a href="analytics.html">Analytics</a> 
+      <a href="dashboard.html" target="_blank">Admin Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- Main Landing Section -->
+  <main class="home-container">
+    <h1>Welcome to the African Nations League Simulator ⚽</h1>
+    <p>Simulate tournaments, explore player stats, track your favorite teams, and subscribe for updates!</p>
+
+    <div class="home-buttons">
+      <button onclick="window.location.href='tournament.html'">Start a Tournament 🏆</button>
+      <button onclick="window.location.href='leaderboard.html'">View Leaderboard 📊</button>
+      <button onclick="window.location.href='playerProfiles.html'">Explore Player Profiles 👟</button>
+      <button onclick="window.location.href='subscribe.html'">Subscribe for Updates 📩</button>
+
+      <!-- Bonus Feature: Select team analytics -->
+      <div class="analytics-section" style="margin-top: 20px;">
+        <select id="analyticsTeamSelect">
+          <option value="">-- Select Team for Analytics --</option>
+        </select>
+        <button id="goToAnalytics">View Analytics 📈</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Fetch federations for analytics dropdown
+    fetch("http://localhost:5000/api/federations")
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch federations");
+        return res.json();
+      })
+      .then(data => {
+        const select = document.getElementById("analyticsTeamSelect");
+        data.forEach(fed => {
+          const option = document.createElement("option");
+          option.value = fed._id;
+          option.textContent = fed.country;
+          select.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error("Error loading federations:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to load federation list. Please try again later!",
+        });
+      });
+
+    // Handle "View Analytics" button click
+    document.getElementById("goToAnalytics").addEventListener("click", () => {
+      const teamId = document.getElementById("analyticsTeamSelect").value;
+
+      if (!teamId) {
+        Swal.fire({
+          icon: "warning",
+          title: "No Team Selected",
+          text: "Please select a team before viewing analytics.",
+          confirmButtonText: "Got it!",
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "info",
+        title: "Loading Analytics...",
+        text: "Please wait while we fetch the team’s performance data.",
+        showConfirmButton: false,
+        timer: 1500,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      setTimeout(() => {
+        window.location.href = `analytics.html?teamId=${teamId}`;
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

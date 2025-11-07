@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Federation | African Nations League</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <h1>Register Your Football Federation</h1>
+
+  <form id="registerForm">
+    <label for="country">Select Country:</label>
+    <select id="country" required>
+      <option value="">Select a country</option>
+      <option value="Algeria">Algeria</option>
+      <option value="Angola">Angola</option>
+      <option value="Benin">Benin</option>
+      <option value="Botswana">Botswana</option>
+      <option value="Burkina Faso">Burkina Faso</option>
+      <option value="Burundi">Burundi</option>
+      <option value="Cabo Verde">Cabo Verde</option>
+      <option value="Cameroon">Cameroon</option>
+      <option value="Central African Republic">Central African Republic</option>
+      <option value="Chad">Chad</option>
+      <option value="Comoros">Comoros</option>
+      <option value="Congo (Brazzaville)">Congo (Brazzaville)</option>
+      <option value="Congo (Kinshasa)">Congo (Kinshasa)</option>
+      <option value="Djibouti">Djibouti</option>
+      <option value="Egypt">Egypt</option>
+      <option value="Equatorial Guinea">Equatorial Guinea</option>
+      <option value="Eritrea">Eritrea</option>
+      <option value="Eswatini">Eswatini</option>
+      <option value="Ethiopia">Ethiopia</option>
+      <option value="Gabon">Gabon</option>
+      <option value="Gambia">Gambia</option>
+      <option value="Ghana">Ghana</option>
+      <option value="Guinea">Guinea</option>
+      <option value="Guinea-Bissau">Guinea-Bissau</option>
+      <option value="Ivory Coast">Ivory Coast</option>
+      <option value="Kenya">Kenya</option>
+      <option value="Lesotho">Lesotho</option>
+      <option value="Liberia">Liberia</option>
+      <option value="Libya">Libya</option>
+      <option value="Madagascar">Madagascar</option>
+      <option value="Malawi">Malawi</option>
+      <option value="Mali">Mali</option>
+      <option value="Mauritania">Mauritania</option>
+      <option value="Mauritius">Mauritius</option>
+      <option value="Morocco">Morocco</option>
+      <option value="Mozambique">Mozambique</option>
+      <option value="Namibia">Namibia</option>
+      <option value="Niger">Niger</option>
+      <option value="Nigeria">Nigeria</option>
+      <option value="Rwanda">Rwanda</option>
+      <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+      <option value="Senegal">Senegal</option>
+      <option value="Seychelles">Seychelles</option>
+      <option value="Sierra Leone">Sierra Leone</option>
+      <option value="Somalia">Somalia</option>
+      <option value="South Africa">South Africa</option>
+      <option value="South Sudan">South Sudan</option>
+      <option value="Sudan">Sudan</option>
+      <option value="Tanzania">Tanzania</option>
+      <option value="Togo">Togo</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="Uganda">Uganda</option>
+      <option value="Zambia">Zambia</option>
+      <option value="Zimbabwe">Zimbabwe</option>
+    </select>
+
+    <label for="representativeName">Representative Name:</label>
+    <input type="text" id="representativeName" placeholder="e.g. John Doe" required />
+
+    <label for="email">Official Email:</label>
+    <input type="email" id="email" placeholder="e.g. info@federation.africa" required />
+
+    <label for="managerName">Team Manager Name:</label>
+    <input type="text" id="managerName" placeholder="e.g. Coach Daniel" required />
+
+    <button type="submit">Register Federation</button>
+  </form>
+
+  <p id="message"></p>
+
+  <script type="module">
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        country: document.getElementById('country').value,
+        representativeName: document.getElementById('representativeName').value,
+        email: document.getElementById('email').value,
+        managerName: document.getElementById('managerName').value
+      };
+
+      try {
+        const res = await fetch('http://localhost:5000/api/federations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          message.style.color = 'green';
+          message.textContent = 'Federation registered successfully!';
+          form.reset();
+        } else {
+          message.style.color = 'red';
+          message.textContent = result.message || 'Error registering federation';
+        }
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = 'Network error!';
+      }
+    });
+  </script>
+  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+</body>
+</html>
+
+
+
+

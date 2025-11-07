@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard | African Nations League</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <h2>Leaderboard</h2>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+
+  <main class="leaderboard-container">
+    <h1>🏆 Team Leaderboard</h1>
+    <p style="text-align:center;">Automatically updates every 10 seconds ⚡</p>
+    <p id="lastUpdated" style="text-align:center; font-size:0.9em; color:#888;">Last updated: —</p>
+
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Team</th>
+          <th>Matches</th>
+          <th>Wins</th>
+          <th>Draws</th>
+          <th>Losses</th>
+          <th>GF</th>
+          <th>GA</th>
+          <th>GD</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script type="module" src="js/leaderboard.js"></script>
+  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+</body>
+</html>
+
+
+
+
+
+
+
+

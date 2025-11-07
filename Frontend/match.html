@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matches | African Nations League</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <h2>Match History</h2>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+
+  <main class="matches-container">
+    <h1>⚽ Match History</h1>
+    <table id="matchesTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Home Team</th>
+          <th>Away Team</th>
+          <th>Score</th>
+          <th>Winner</th>
+          <th>Commentary</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/match");
+        const matches = await res.json();
+
+        const tbody = document.querySelector("#matchesTable tbody");
+        matches.forEach(match => {
+          const tr = document.createElement("tr");
+          const date = new Date(match.date).toLocaleString();
+          tr.innerHTML = `
+            <td>${date}</td>
+            <td>${match.homeTeam}</td>
+            <td>${match.awayTeam}</td>
+            <td>${match.homeScore} - ${match.awayScore}</td>
+            <td>${match.winner}</td>
+            <td>${match.commentary}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        Swal.fire({ icon: "error", title: "Error", text: "Could not load matches." });
+      }
+    });
+  </script>
+  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+</body>
+</html>
+
+
+
+
+

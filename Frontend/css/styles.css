@@ -1,0 +1,268 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6f8;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #0a3d62;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* moves links to the right */
+  padding: 15px 40px;
+}
+
+/* Logo / Title */
+.navbar h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Wrapping Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Links Styling */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.nav-links a:hover {
+  color: #b8d3c3;
+}
+
+
+button {
+  background:  #E03C32;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  background: #005f2a;
+}
+
+.container, .form-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: 5rem auto;
+  text-align: center;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.8rem 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+table {
+  width: 90%;
+  margin: 2rem auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color:  #ff5101;
+  color: white;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 200px;
+  margin: 1rem;
+  display: inline-block;
+}
+
+form {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffffcc;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+form label {
+  font-weight: 600;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+
+form input, form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #0a3d62, #32cd32);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+form button:hover {
+  background: linear-gradient(90deg, #0a3d62, #7fff00);
+}
+
+/* Success/Error Popup */
+.popup-message {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  animation: fadeInOut 4s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+/* Simulation Section Card */
+.simulation-card {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  background-color: #fefefe;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Rows inside simulation card */
+.simulation-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Dropdowns styling */
+.simulation-card select {
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Button styling */
+.simulate-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0a3d62;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.simulate-btn:hover {
+  background-color:#0a3d62;
+}
+
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.home-buttons .btn {
+  text-decoration: none;
+  padding: 12px 25px;
+  margin: 5px;
+  border-radius: 8px;
+  background-color:#0a3d62;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.home-buttons .btn:hover {
+  background-color:#0a3d62;
+}
+
+/* Back Button Styling */
+.back-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #0a3d62;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.back-btn:hover {
+  background-color: #005f2a;
+  transform: scale(1.05);
+}
+
+
+
+

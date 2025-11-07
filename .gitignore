@@ -1,0 +1,10 @@
+# Ignore build artifacts
+/build/
+/dist/
+# Ignore specific file extensions
+*.log
+*.tmp
+# Ignore environment variables file
+.env
+Backend/node_modules
+Backend/openJdk-25

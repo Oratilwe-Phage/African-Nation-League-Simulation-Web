@@ -1,0 +1,96 @@
+body {
+  background: #f2f5f9;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  color: #222;
+}
+
+.navbar {
+  background: #0a3d62;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.leaderboard-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0a3d62;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th {
+  background: #0a3d62;
+  color: white;
+  padding: 12px;
+  text-align: center;
+}
+
+.leaderboard-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.team-row:hover {
+  background: #f8faff;
+}
+
+.team-name {
+  font-weight: 600;
+  text-align: left;
+}
+
+.points {
+  font-weight: bold;
+  color: #0a3d62;
+}
+
+.gold {
+  background: linear-gradient(to right, #ffd700, #fff7cc);
+}
+
+.silver {
+  background: linear-gradient(to right, #c0c0c0, #f7f7f7);
+}
+
+.bronze {
+  background: linear-gradient(to right, #cd7f32, #f5e6cc);
+}
+
+@media (max-width: 700px) {
+  .leaderboard-container {
+    padding: 1rem;
+  }
+
+  .leaderboard-table th, .leaderboard-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
