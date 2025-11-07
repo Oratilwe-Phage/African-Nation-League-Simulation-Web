@@ -49,8 +49,9 @@ app.use("/api/players", playerRoutes);
 // ✅ Static file serving (for frontend)
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Fallback for frontend routes (handles SPA navigation)
-app.get("*", (req, res) => {
+// ✅ Fallback for frontend routes (no wildcards)
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith("/api/")) return next();
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
