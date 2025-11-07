@@ -1,3 +1,4 @@
+// controllers/tournamentController.js
 import Tournament from "../models/Tournament.js";
 import Federation from "../models/Federation.js";
 import Match from "../models/Match.js";
@@ -8,15 +9,14 @@ import Match from "../models/Match.js";
 const generatePlayers = () => {
   const players = [];
   for (let i = 0; i < 23; i++) {
-    const player = {
+    players.push({
       name: `Player ${i + 1}`,
       rating: Math.floor(Math.random() * 51) + 50, // random 50–100
-    };
-    players.push(player);
+    });
   }
 
-  const avgRating = players.reduce((sum, p) => sum + p.rating, 0) / players.length;
-  return { players, avgRating: Math.round(avgRating) };
+  const avgRating = Math.round(players.reduce((sum, p) => sum + p.rating, 0) / players.length);
+  return { players, avgRating };
 };
 
 /* -------------------------------------------------------
@@ -27,7 +27,7 @@ const generateCommentary = (home, away, homeScore, awayScore, winner) => {
     `${home} and ${away} went head-to-head in an intense match!`,
     `The crowd erupted as ${winner} secured a crucial victory.`,
     `${home} showed great attacking play, but ${away} held firm in defense.`,
-    `It was a thrilling game ending ${homeScore}-${awayScore} with ${winner} taking the win.`,
+    `It was a thrilling ${homeScore}-${awayScore} encounter with ${winner} taking the win!`,
     `${winner} dominated possession and deservedly advanced to the next round.`,
   ];
   return phrases[Math.floor(Math.random() * phrases.length)];
@@ -109,7 +109,7 @@ export const createTournament = async (req, res, next) => {
       });
     }
 
-    // Auto-generate 23 random players if a federation has none
+    // Generate random players if missing
     for (const fed of federations) {
       if (!fed.players || fed.players.length === 0) {
         const { players, avgRating } = generatePlayers();
@@ -119,17 +119,18 @@ export const createTournament = async (req, res, next) => {
       }
     }
 
-    // Randomly select 8 federations for Quarter Finals
+    // Select 8 random federations
     const shuffled = federations.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 8);
 
-    // Create Quarter Final matches
+    // Quarter Final Matches
     const quarterFinals = [];
     for (let i = 0; i < selected.length; i += 2) {
       const match = await simulateMatch(selected[i], selected[i + 1], "Quarter Final");
       quarterFinals.push(match);
     }
 
+    // Create Tournament
     const tournament = await Tournament.create({
       name,
       year,
@@ -177,6 +178,7 @@ export const simulateNextRound = async (req, res, next) => {
       return res.status(400).json({ message: "Tournament already completed." });
     }
 
+    // Winners from previous round
     const prevWinners = tournament.matches
       .filter((m) =>
         nextRound === "Semi Final" ? m.round === "Quarter Final" : m.round === "Semi Final"
