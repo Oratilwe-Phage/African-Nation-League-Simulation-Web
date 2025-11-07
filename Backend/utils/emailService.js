@@ -1,36 +1,27 @@
-// utils/emailService.js
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export const sendEmail = async (to, subject, text) => {
-  try {
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  const testAccount = await nodemailer.createTestAccount();
 
-    // Email options
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      text,
-    };
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", info.response);
-    return info;
-  } catch (error) {
-    console.error("Email sending error:", error);
-    throw new Error("Failed to send email. Check your credentials and SMTP settings.");
-  }
+  const info = await transporter.sendMail({
+    from: `"African Nations League" <${testAccount.user}>`,
+    to,
+    subject,
+    text,
+  });
+
+  console.log("✅ Email sent! Preview it here:");
+  console.log(nodemailer.getTestMessageUrl(info));
 };
 
 
