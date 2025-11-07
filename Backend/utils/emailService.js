@@ -1,28 +1,36 @@
+// utils/emailService.js
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const sendEmail = async (to, subject, text) => {
-  const testAccount = await nodemailer.createTestAccount();
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: false, // TLS
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
+    const info = await transporter.sendMail({
+      from: `"African Nations League" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+    });
 
-  const info = await transporter.sendMail({
-    from: `"African Nations League" <${testAccount.user}>`,
-    to,
-    subject,
-    text,
-  });
-
-  console.log("✅ Email sent! Preview it here:");
-  console.log(nodemailer.getTestMessageUrl(info));
+    console.log("✅ Email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("❌ Failed to send email:", error);
+    throw new Error("Email sending failed");
+  }
 };
+
+
 
 
 
