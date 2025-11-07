@@ -4,6 +4,8 @@ import { sendEmail } from "../utils/emailService.js";
 
 // Subscribe to match updates
 export const subscribe = async (req, res, next) => {
+  console.log("📨 Received subscription request:", req.body);
+
   try {
     const { email } = req.body;
 
@@ -11,16 +13,16 @@ export const subscribe = async (req, res, next) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // Check for duplicates
+    // Check if already subscribed
     const existing = await Subscriber.findOne({ email });
     if (existing) {
       return res.status(200).json({ message: "Already subscribed" });
     }
 
-    // Save subscriber
-    const subscriber = await Subscriber.create({ email });
+    // Save new subscriber
+    await Subscriber.create({ email });
 
-    // Try sending welcome email
+    // Send welcome email
     try {
       await sendEmail(
         email,
@@ -28,16 +30,22 @@ export const subscribe = async (req, res, next) => {
         "Thank you for subscribing! You’ll receive notifications when new matches are simulated."
       );
     } catch (emailErr) {
-      console.error("Email failed:", emailErr.message);
-      return res.status(500).json({ message: "Subscribed, but failed to send email." });
+      console.error("❗ Email sending failed:", emailErr.message);
+      return res.status(500).json({
+        message: "Subscribed, but failed to send the welcome email.",
+      });
     }
 
-    res.status(201).json({ message: "Subscribed successfully! Email sent." });
+    return res.status(201).json({
+      message: "Subscribed successfully! A welcome email has been sent.",
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Subscription failed. Please try again." });
+    console.error("❗ Subscription Error:", err);
+    return res.status(500).json({ message: "Subscription failed. Please try again." });
   }
 };
+
 
 
 
