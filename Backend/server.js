@@ -46,22 +46,18 @@ app.use("/api/subscribe", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// ✅ Static file serving (important for Render)
+// ✅ Static file serving (for frontend)
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Fallback for frontend routes
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// ✅ Fallback for frontend routes (handles SPA navigation)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-
-// ✅ 404 and error handlers
+// ✅ Error handler middleware (for API routes only)
 app.use("/api/error", errorHandler);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not Found" });
-});
-
+// ✅ General error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: err.message || "Server Error" });
