@@ -3,151 +3,190 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Administrator Dashboard | African Nations League</title>
+  <title>Admin Dashboard - African Nations League</title>
   <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    /* General Page Styling */
+    :root {
+      --navy: #001f3f;
+      --navy-light: #003366;
+      --white: #ffffff;
+      --gray-bg: #f5f6fa;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
     body {
-      background-color: #f0f3f2;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Poppins", sans-serif;
+      background-color: var(--gray-bg);
       margin: 0;
       padding: 0;
-      color: #333;
     }
 
     /* Navbar */
     .navbar {
-      background-color: #001f3f; /* Navy Blue */
-      color: #fff;
+      background-color: var(--navy);
+      color: var(--white);
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 30px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 8px var(--shadow);
     }
-
     .navbar h2 {
       margin: 0;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 1px;
     }
-
     .nav-links a {
-      color: #fff;
+      color: var(--white);
       text-decoration: none;
-      margin-left: 20px;
-      font-size: 16px;
-      transition: color 0.3s ease;
+      margin: 0 1rem;
+      font-weight: 500;
+      transition: 0.3s;
     }
-
     .nav-links a:hover {
-      color: #00b894;
+      color: #ffd700;
     }
 
-    /* Container */
-    .container {
-      max-width: 1000px;
-      margin: 60px auto;
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      animation: fadeIn 0.8s ease;
+    /* Back Button */
+    .back-btn {
+      background-color: var(--navy);
+      color: var(--white);
+      border: none;
+      padding: 10px 15px;
+      margin: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .back-btn:hover {
+      background-color: var(--navy-light);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Login Container */
+    .login-container {
+      max-width: 400px;
+      background: var(--white);
+      margin: 5rem auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px var(--shadow);
+      animation: fadeIn 0.5s ease;
     }
-
-    h1 {
+    .login-container h1 {
       text-align: center;
-      color: #001f3f;
-      margin-bottom: 25px;
+      color: var(--navy);
+      margin-bottom: 1.5rem;
+    }
+    .login-container label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .login-container button {
+      width: 100%;
+      background-color: var(--navy);
+      color: var(--white);
+      padding: 10px;
+      margin-top: 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .login-container button:hover {
+      background-color: var(--navy-light);
     }
 
-    /* Form */
-    .form-group {
+    /* Dashboard Section */
+    .dashboard {
+      display: none;
+      padding: 2rem;
+      animation: fadeIn 0.4s ease;
+    }
+    .dashboard-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .dashboard h1 {
+      color: var(--navy);
     }
 
-    select, button {
-      flex: 1;
-      min-width: 48%;
-      padding: 12px;
+    /* Action Buttons */
+    .simulate-btn {
+      background-color: var(--navy);
+      color: var(--white);
+      padding: 12px 20px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-
-    button {
-      background-color: #001f3f;
-      color: #fff;
-      cursor: pointer;
       border: none;
-      transition: background-color 0.3s ease;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 10px var(--shadow);
+      transition: 0.3s;
+    }
+    .simulate-btn:hover {
+      background-color: var(--navy-light);
+      transform: translateY(-2px);
     }
 
-    button:hover {
-      background-color: #004080;
+    .logout-btn {
+      background-color: crimson;
+      color: var(--white);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .logout-btn:hover {
+      background-color: darkred;
+      transform: scale(1.05);
     }
 
     /* Table */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 30px;
-      text-align: center;
-      background-color: white;
+      margin-top: 1.5rem;
+      box-shadow: 0 4px 8px var(--shadow);
       border-radius: 10px;
       overflow: hidden;
+      background: var(--white);
     }
-
     th, td {
-      border: 1px solid #ddd;
+      border: 1px solid #eee;
       padding: 12px;
+      text-align: center;
+      font-size: 0.95rem;
     }
-
     th {
-      background-color: #001f3f;
-      color: #fff;
+      background-color: var(--navy);
+      color: var(--white);
     }
-
     tr:nth-child(even) {
       background-color: #f8f8f8;
     }
-
-    .winner {
-      font-weight: bold;
-      color: #001f3f;
+    tr:hover {
+      background-color: #f1f1f1;
     }
 
-    /* Back Button */
-    .back-btn {
-      display: inline-block;
-      background-color: #004080;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 15px;
-      transition: background-color 0.3s ease;
-      margin-bottom: 20px;
-    }
-
-    .back-btn:hover {
-      background-color: #0074d9;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-
 <body>
+
   <!-- Navbar -->
   <nav class="navbar">
     <h2>African Nations League</h2>
@@ -158,132 +197,146 @@
       <a href="tournament.html">Tournament</a>
       <a href="match.html">Matches</a>
     </div>
+    <button class="logout-btn" id="logoutBtn" style="display: none;">Logout</button>
   </nav>
 
-  <div class="container">
-    <a href="index.html" class="back-btn">← Back</a>
-    <h1>Administrator Dashboard</h1>
+  <!-- Back Button -->
+  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
 
-    <div class="form-group">
-      <select id="homeFederation"></select>
-      <select id="awayFederation"></select>
+  <!-- Login Section -->
+  <div class="login-container" id="loginSection">
+    <h1>Admin Login</h1>
+    <form id="adminLoginForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter admin username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" required>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div class="dashboard" id="dashboardSection">
+    <div class="dashboard-header">
+      <h1>Admin Dashboard</h1>
+      <button class="simulate-btn" id="simulateBtn">⚽ Simulate Match</button>
     </div>
 
-    <div class="form-group" style="justify-content: center;">
-      <button id="simulateBtn">Simulate Match</button>
-    </div>
-
-    <table id="matchesTable">
+    <table id="federationsTable">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Home Team</th>
-          <th>Score</th>
-          <th>Away Team</th>
-          <th>Winner</th>
+          <th>Country</th>
+          <th>Coach</th>
+          <th>Ranking</th>
         </tr>
       </thead>
-      <tbody id="matchesBody">
-        <!-- Matches will be inserted here -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
-  <script>
-    const apiBase = "https://african-nation-league-simulation-web.onrender.com";
+<script>
+const apiBase = "https://african-nation-league-simulation-web.onrender.com";
 
-    // Load federations
-    async function loadFederations() {
-      try {
-        const res = await fetch(`${apiBase}/federations`);
-        const federations = await res.json();
+// On load: check login
+document.addEventListener("DOMContentLoaded", () => {
+  const isLoggedIn = localStorage.getItem("isAdminLoggedIn");
+  const loginSection = document.getElementById("loginSection");
+  const dashboardSection = document.getElementById("dashboardSection");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-        const homeSelect = document.getElementById("homeFederation");
-        const awaySelect = document.getElementById("awayFederation");
+  if (isLoggedIn) {
+    loginSection.style.display = "none";
+    dashboardSection.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+    loadFederations();
+  } else {
+    loginSection.style.display = "block";
+    dashboardSection.style.display = "none";
+  }
+});
 
-        federations.forEach(fed => {
-          const option1 = document.createElement("option");
-          option1.value = fed._id;
-          option1.textContent = `${fed.country} (${Math.round(fed.rating)})`;
-          homeSelect.appendChild(option1);
+// Login logic
+document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-          const option2 = document.createElement("option");
-          option2.value = fed._id;
-          option2.textContent = `${fed.country} (${Math.round(fed.rating)})`;
-          awaySelect.appendChild(option2);
-        });
-      } catch (err) {
-        console.error("Failed to load federations:", err);
-        Swal.fire("Error", "Could not load federations.", "error");
-      }
+  try {
+    const res = await fetch(`${apiBase}/api/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem("isAdminLoggedIn", "true");
+      Swal.fire({
+        icon: "success",
+        title: "Welcome Admin",
+        text: "Login Successful",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      Swal.fire("Error", data.message || "Invalid credentials", "error");
     }
+  } catch {
+    Swal.fire("Error", "Unable to connect to server", "error");
+  }
+});
 
-    // Format date nicely
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return !isNaN(date) ? date.toLocaleString() : "N/A";
+// Load federations
+async function loadFederations() {
+  try {
+    const res = await fetch(`${apiBase}/api/federations`);
+    if (!res.ok) throw new Error("Failed to load federations");
+    const federations = await res.json();
+    const tbody = document.querySelector("#federationsTable tbody");
+    tbody.innerHTML = federations.map(f =>
+      `<tr><td>${f.country}</td><td>${f.coach}</td><td>${f.ranking || "N/A"}</td></tr>`
+    ).join("");
+  } catch {
+    Swal.fire("Error", "Could not load federations", "error");
+  }
+}
+
+// Simulate match
+document.getElementById("simulateBtn").addEventListener("click", async () => {
+  try {
+    const res = await fetch(`${apiBase}/api/federations/simulate`, { method: "POST" });
+    const data = await res.json();
+
+    if (data.success) {
+      Swal.fire("Success", data.message || "Match simulated!", "success");
+      loadFederations();
+    } else {
+      Swal.fire("Error", data.message || "Simulation failed", "error");
     }
+  } catch {
+    Swal.fire("Error", "Failed to simulate match", "error");
+  }
+});
 
-    // Add match row
-    function addMatchRow(match) {
-      const tableBody = document.getElementById("matchesBody");
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${formatDate(match.date)}</td>
-        <td>${match.homeTeam}</td>
-        <td>${match.homeScore} - ${match.awayScore}</td>
-        <td>${match.awayTeam}</td>
-        <td class="winner">${match.winner}</td>
-      `;
-
-      tableBody.prepend(row);
-    }
-
-    // Simulate match
-    async function simulateMatch() {
-      const homeId = document.getElementById("homeFederation").value;
-      const awayId = document.getElementById("awayFederation").value;
-
-      if (!homeId || !awayId) {
-        Swal.fire("Warning", "Please select both federations.", "warning");
-        return;
-      }
-
-      if (homeId === awayId) {
-        Swal.fire("Error", "Home and Away teams must be different.", "error");
-        return;
-      }
-
-      try {
-        const res = await fetch(`${apiBase}/federations/simulate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ homeId, awayId }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message || "Failed to simulate match.");
-
-        Swal.fire({
-          icon: "success",
-          title: "Match Simulated!",
-          text: `${data.match.homeTeam} ${data.match.homeScore} - ${data.match.awayScore} ${data.match.awayTeam}\nWinner: ${data.match.winner}`,
-        });
-
-        addMatchRow(data.match);
-      } catch (err) {
-        console.error(err);
-        Swal.fire("Error", err.message || "Failed to simulate match.", "error");
-      }
-    }
-
-    document.getElementById("simulateBtn").addEventListener("click", simulateMatch);
-    window.addEventListener("DOMContentLoaded", loadFederations);
-  </script>
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("isAdminLoggedIn");
+  Swal.fire({
+    icon: "info",
+    title: "Logged Out",
+    text: "See you soon, Admin!",
+    timer: 1200,
+    showConfirmButton: false,
+  });
+  setTimeout(() => location.reload(), 1200);
+});
+</script>
 </body>
 </html>
+
 
 
 
