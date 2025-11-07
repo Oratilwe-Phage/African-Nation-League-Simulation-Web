@@ -36,7 +36,7 @@
       const email = document.getElementById("subscriberEmail").value;
 
       try {
-const res = await fetch("https://african-nation-league-simulation-web-1.onrender.com/api/subscribe", {
+const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/subscribe", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ email })
