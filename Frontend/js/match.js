@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ✅ Load Federations
   try {
-    const res = await fetch("http://localhost:5000/api/federations");
+    const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/federations");
     const federations = await res.json();
 
     federations.forEach((fed) => {
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/match/simulate", {
+      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/match/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ homeFederationId, awayFederationId }),

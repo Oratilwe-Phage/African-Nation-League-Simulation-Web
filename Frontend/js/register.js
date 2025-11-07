@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/federations", {
+      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/federations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

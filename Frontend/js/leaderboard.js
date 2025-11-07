@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Function to fetch and display leaderboard
   async function loadLeaderboard() {
     try {
-      const res = await fetch("http://localhost:5000/api/stats/leaderboard");
+      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/stats/leaderboard");
       const leaderboard = await res.json();
 
       tableBody.innerHTML = "";

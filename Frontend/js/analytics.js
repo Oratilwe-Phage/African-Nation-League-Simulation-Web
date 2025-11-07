@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://african-nation-league-simulation-web.onrender.com/api";
 const teamSelect = document.getElementById("teamSelect");
 const analyticsContainer = document.getElementById("analyticsContainer");
 const chartCanvas = document.getElementById("analyticsChart");

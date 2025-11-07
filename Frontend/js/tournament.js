@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadTournaments() {
     try {
-      const res = await fetch("http://localhost:5000/api/tournament");
+      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament");
       const data = await res.json();
 
       // Accept both raw array or { success: true, tournaments: [...] }
@@ -29,14 +29,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   simulateBtn.addEventListener("click", async () => {
     try {
       // Try the canonical route first
-      let res = await fetch("http://localhost:5000/api/tournament/simulate-round", {
+      let res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate-round", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
 
       // If route not found (404), try the alias route /simulate
       if (res.status === 404) {
-        res = await fetch("http://localhost:5000/api/tournament/simulate", {
+        res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });

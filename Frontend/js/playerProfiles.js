@@ -1,5 +1,5 @@
 // js/playerProfiles.js
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://african-nation-league-simulation-web.onrender.com/api";
 
 
 // DOM elements

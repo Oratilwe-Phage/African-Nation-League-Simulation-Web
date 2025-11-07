@@ -15,7 +15,7 @@ export async function handleAdminLogin(usernameId, passwordId, messageId) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/api/admin/login", {
+    const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -68,7 +68,7 @@ export function handleSubscription(formId, inputId) {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/subscribe", {
+      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
