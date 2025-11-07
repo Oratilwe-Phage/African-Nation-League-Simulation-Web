@@ -37,8 +37,8 @@ const generateCommentary = (home, away, homeScore, awayScore, winner) => {
    Helper: Simulate a single match
 ------------------------------------------------------- */
 const simulateMatch = async (home, away, round) => {
-  const homeBias = home.teamRating > away.teamRating ? 1 : 0;
-  const awayBias = away.teamRating > home.teamRating ? 1 : 0;
+  const homeBias = home.rating > away.rating ? 1 : 0;
+  const awayBias = away.rating > home.rating ? 1 : 0;
 
   const homeScore = Math.floor(Math.random() * 3) + homeBias;
   const awayScore = Math.floor(Math.random() * 3) + awayBias;
@@ -79,7 +79,7 @@ const simulateMatch = async (home, away, round) => {
 export const getAllTournaments = async (req, res, next) => {
   try {
     const tournaments = await Tournament.find()
-      .populate("matches.homeTeam matches.awayTeam matches.winner", "country teamRating")
+      .populate("matches.homeTeam matches.awayTeam matches.winner", "country rating")
       .sort({ createdAt: -1 });
 
     res.status(200).json(tournaments);
@@ -114,7 +114,7 @@ export const createTournament = async (req, res, next) => {
       if (!fed.players || fed.players.length === 0) {
         const { players, avgRating } = generatePlayers();
         fed.players = players;
-        fed.teamRating = avgRating;
+        fed.rating = avgRating;
         await fed.save();
       }
     }
@@ -130,7 +130,6 @@ export const createTournament = async (req, res, next) => {
       quarterFinals.push(match);
     }
 
-    // Create and populate the tournament document
     const tournament = await Tournament.create({
       name,
       year,
@@ -140,7 +139,7 @@ export const createTournament = async (req, res, next) => {
 
     const populated = await tournament.populate(
       "matches.homeTeam matches.awayTeam matches.winner",
-      "country teamRating"
+      "country rating"
     );
 
     res.status(200).json({
@@ -163,7 +162,7 @@ export const simulateNextRound = async (req, res, next) => {
   try {
     const tournament = await Tournament.findOne()
       .sort({ createdAt: -1 })
-      .populate("matches.homeTeam matches.awayTeam matches.winner", "country teamRating");
+      .populate("matches.homeTeam matches.awayTeam matches.winner", "country rating");
 
     if (!tournament) {
       return res.status(404).json({ message: "No active tournament found." });
@@ -203,7 +202,7 @@ export const simulateNextRound = async (req, res, next) => {
 
     const updated = await tournament.populate(
       "matches.homeTeam matches.awayTeam matches.winner",
-      "country teamRating"
+      "country rating"
     );
 
     res.status(200).json({
@@ -218,6 +217,8 @@ export const simulateNextRound = async (req, res, next) => {
     });
   }
 };
+
+
 
 
 

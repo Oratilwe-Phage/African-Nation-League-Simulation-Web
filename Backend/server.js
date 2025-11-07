@@ -33,7 +33,7 @@ app.use(express.json());
 
 // API Routes
 app.use("/api/federations", federationRoutes);
-app.use("/api/tournaments", tournamentRoutes);
+app.use("/api/tournament", tournamentRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/subscribe", subscriberRoutes);
