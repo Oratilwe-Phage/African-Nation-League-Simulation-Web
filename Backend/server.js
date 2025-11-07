@@ -20,10 +20,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://african-nation-league-simulation-web-1.onrender.com"],
+    origin: [
+      "https://african-nation-league-simulation-web.onrender.com",
+      "https://african-nation-league-simulation-web-1.onrender.com"
+    ],
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 

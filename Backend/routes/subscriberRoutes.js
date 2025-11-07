@@ -1,5 +1,3 @@
-// routes/subscriberRoutes.js
-
 import express from "express";
 import { subscribe } from "../controllers/subscriberController.js";
 

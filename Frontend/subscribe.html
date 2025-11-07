@@ -8,11 +8,19 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <h2>African Nations League</h2>
+<!-- Navbar -->
+<nav class="navbar">
+  <h2>African Nations League</h2>
+  <div class="nav-links">
     <a href="index.html">Home</a>
+    <a href="subscribe.html">Subscribe</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="match.html">Matches</a>
     <a href="dashboard.html">Admin Dashboard</a>
-  </nav>
+  </div>
+</nav>
+
 
   <main class="subscription-container">
     <h1>📩 Subscribe for Updates</h1>
@@ -28,11 +36,12 @@
       const email = document.getElementById("subscriberEmail").value;
 
       try {
-        const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
-        });
+const res = await fetch("https://african-nation-league-simulation-web-1.onrender.com/api/subscribe", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email })
+});
+
         const data = await res.json();
 
         if (res.ok) {
