@@ -11,10 +11,9 @@ const generatePlayers = () => {
   for (let i = 0; i < 23; i++) {
     players.push({
       name: `Player ${i + 1}`,
-      rating: Math.floor(Math.random() * 51) + 50, // random 50–100
+      rating: Math.floor(Math.random() * 51) + 50, // 50–100
     });
   }
-
   const avgRating = Math.round(players.reduce((sum, p) => sum + p.rating, 0) / players.length);
   return { players, avgRating };
 };
@@ -52,13 +51,7 @@ const simulateMatch = async (home, away, round) => {
       ? home
       : away;
 
-  const commentary = generateCommentary(
-    home.country,
-    away.country,
-    homeScore,
-    awayScore,
-    winner.country
-  );
+  const commentary = generateCommentary(home.country, away.country, homeScore, awayScore, winner.country);
 
   const match = await Match.create({
     homeTeam: home._id,
@@ -76,33 +69,39 @@ const simulateMatch = async (home, away, round) => {
 /* -------------------------------------------------------
    Get all tournaments
 ------------------------------------------------------- */
-export const getAllTournaments = async (req, res, next) => {
+export const getAllTournaments = async (req, res) => {
   try {
     const tournaments = await Tournament.find()
-      .populate("matches.homeTeam matches.awayTeam matches.winner", "country rating")
+      .populate({
+        path: "matches",
+        populate: [
+          { path: "homeTeam", select: "country" },
+          { path: "awayTeam", select: "country" },
+          { path: "winner", select: "country" },
+        ],
+      })
+      .populate("winner", "country")
       .sort({ createdAt: -1 });
 
     res.status(200).json(tournaments);
   } catch (err) {
-    next(err);
+    console.error("Error in getAllTournaments:", err);
+    res.status(500).json({ message: "Failed to fetch tournaments", error: err.message });
   }
 };
 
 /* -------------------------------------------------------
-   Create new tournament (Quarter-Final stage)
+   Create new tournament
 ------------------------------------------------------- */
-export const createTournament = async (req, res, next) => {
+export const createTournament = async (req, res) => {
   try {
     const { name, year } = req.body;
 
     if (!name || !year) {
-      return res.status(400).json({
-        message: "Tournament name and year are required.",
-      });
+      return res.status(400).json({ message: "Tournament name and year are required." });
     }
 
     let federations = await Federation.find();
-
     if (federations.length < 8) {
       return res.status(400).json({
         message: `At least 8 federations required. Found ${federations.length}.`,
@@ -123,62 +122,64 @@ export const createTournament = async (req, res, next) => {
     const shuffled = federations.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 8);
 
-    // Quarter Final Matches
+    // Quarterfinals
     const quarterFinals = [];
     for (let i = 0; i < selected.length; i += 2) {
       const match = await simulateMatch(selected[i], selected[i + 1], "Quarter Final");
       quarterFinals.push(match);
     }
 
-    // Create Tournament
     const tournament = await Tournament.create({
       name,
       year,
-      winner: null,
       matches: quarterFinals,
     });
 
-    const populated = await tournament.populate(
-      "matches.homeTeam matches.awayTeam matches.winner",
-      "country rating"
-    );
+    const populated = await Tournament.findById(tournament._id)
+      .populate({
+        path: "matches",
+        populate: [
+          { path: "homeTeam", select: "country" },
+          { path: "awayTeam", select: "country" },
+          { path: "winner", select: "country" },
+        ],
+      });
 
-    res.status(200).json({
-      message: "Tournament started! Quarter Finals ready.",
+    res.status(201).json({
+      message: "Tournament created successfully! Quarter Finals ready.",
       tournament: populated,
     });
   } catch (err) {
     console.error("Error in createTournament:", err);
-    res.status(500).json({
-      message: "Error starting tournament.",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Error starting tournament", error: err.message });
   }
 };
 
 /* -------------------------------------------------------
-   Simulate next round (Semi / Final)
+   Simulate next round
 ------------------------------------------------------- */
-export const simulateNextRound = async (req, res, next) => {
+export const simulateNextRound = async (req, res) => {
   try {
     const tournament = await Tournament.findOne()
       .sort({ createdAt: -1 })
-      .populate("matches.homeTeam matches.awayTeam matches.winner", "country rating");
+      .populate({
+        path: "matches",
+        populate: [
+          { path: "homeTeam", select: "country rating" },
+          { path: "awayTeam", select: "country rating" },
+          { path: "winner", select: "country rating" },
+        ],
+      });
 
-    if (!tournament) {
-      return res.status(404).json({ message: "No active tournament found." });
-    }
+    if (!tournament) return res.status(404).json({ message: "No active tournament found." });
 
     const currentRounds = tournament.matches.map((m) => m.round);
     let nextRound;
 
     if (!currentRounds.includes("Semi Final")) nextRound = "Semi Final";
     else if (!currentRounds.includes("Final")) nextRound = "Final";
-    else {
-      return res.status(400).json({ message: "Tournament already completed." });
-    }
+    else return res.status(400).json({ message: "Tournament already completed." });
 
-    // Winners from previous round
     const prevWinners = tournament.matches
       .filter((m) =>
         nextRound === "Semi Final" ? m.round === "Quarter Final" : m.round === "Semi Final"
@@ -186,26 +187,30 @@ export const simulateNextRound = async (req, res, next) => {
       .map((m) => m.winner);
 
     const federations = await Federation.find({ _id: { $in: prevWinners } });
-    const newMatches = [];
 
+    const newMatches = [];
     for (let i = 0; i < federations.length; i += 2) {
       const match = await simulateMatch(federations[i], federations[i + 1], nextRound);
       newMatches.push(match);
     }
 
-    let finalWinner = null;
     if (nextRound === "Final") {
-      finalWinner = newMatches[0].winner;
+      tournament.winner = newMatches[0].winner;
     }
 
     tournament.matches.push(...newMatches);
-    if (finalWinner) tournament.winner = finalWinner;
     await tournament.save();
 
-    const updated = await tournament.populate(
-      "matches.homeTeam matches.awayTeam matches.winner",
-      "country rating"
-    );
+    const updated = await Tournament.findById(tournament._id)
+      .populate({
+        path: "matches",
+        populate: [
+          { path: "homeTeam", select: "country" },
+          { path: "awayTeam", select: "country" },
+          { path: "winner", select: "country" },
+        ],
+      })
+      .populate("winner", "country");
 
     res.status(200).json({
       message: `${nextRound} simulated successfully.`,
@@ -213,12 +218,12 @@ export const simulateNextRound = async (req, res, next) => {
     });
   } catch (err) {
     console.error("Error in simulateNextRound:", err);
-    res.status(500).json({
-      message: "Error simulating next round.",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Error simulating next round", error: err.message });
   }
 };
+
+
+
 
 
 

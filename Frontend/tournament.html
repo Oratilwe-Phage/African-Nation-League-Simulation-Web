@@ -1,227 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>African Nations League | Tournament</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #0b6623;
-      margin-bottom: 20px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background: #0b6623;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 5px;
-    }
-
-    button:hover {
-      background: #0e7c2b;
-    }
-
-    .bracket {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 40px;
-      flex-wrap: wrap;
-    }
-
-    .round {
-      width: 30%;
-    }
-
-    .match {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      margin: 10px 0;
-      padding: 10px;
-    }
-
-    .winner {
-      font-weight: bold;
-      color: #0b6623;
-    }
-
-    .final-winner {
-      font-size: 1.4em;
-      color: #0b6623;
-      font-weight: bold;
-      margin-top: 30px;
-    }
-
-    .back-btn {
-      position: fixed;
-      bottom: 15px;
-      left: 15px;
-      background: #0b6623;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .back-btn:hover {
-      background: #0e7c2b;
-    }
-
-    .commentary {
-      font-size: 0.9em;
-      color: #555;
-      margin-top: 5px;
-      font-style: italic;
-    }
-  </style>
 </head>
 <body>
+  <h1>African Nations League</h1>
+  <button id="startBtn">Start Tournament</button>
+  <button id="nextBtn">Simulate Next Round</button>
 
-  <h1>🏆 African Nations League Tournament</h1>
-
-  <button id="startTournamentBtn">Start Tournament</button>
-  <button id="simulateRoundBtn" style="display:none;">Simulate Next Round</button>
-
-  <div id="bracketContainer" class="bracket" style="display:none;">
-    <div class="round" id="quarterFinals"><h3>Quarter Finals</h3></div>
-    <div class="round" id="semiFinals"><h3>Semi Finals</h3></div>
-    <div class="round" id="final"><h3>Final</h3></div>
-  </div>
-
-  <div id="champion" class="final-winner"></div>
-
-  <button class="back-btn" onclick="window.history.back()">⬅ Back</button>
+  <div id="tournamentResults"></div>
 
   <script>
-    const startBtn = document.getElementById("startTournamentBtn");
-    const simulateBtn = document.getElementById("simulateRoundBtn");
-    const bracketContainer = document.getElementById("bracketContainer");
-    const championDiv = document.getElementById("champion");
-    let currentTournament = null;
+    const baseURL = "https://african-nation-league-simulation-web.onrender.com/api/tournament";
 
-    // Handle API responses
-    const handleResponse = async (res) => {
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Unexpected server error");
-      return data.tournament;
-    };
-
-    // Start tournament
-    startBtn.addEventListener("click", async () => {
+    async function startTournament() {
       try {
-const result = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournaments", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: "African Nations League",
-    year: new Date().getFullYear()
-  }),
-});
-        const data = await result.json();
-
-        if (!result.ok) {
-          Swal.fire({ icon: "error", title: "Error", text: data.message });
-          return;
-        }
-
-        currentTournament = data.tournament;
-        Swal.fire({
-          icon: "success",
-          title: "Tournament Started!",
-          text: data.message || "Quarter Finals generated.",
-          timer: 2000,
-          showConfirmButton: false
+        const res = await fetch(baseURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "African Nations League",
+            year: new Date().getFullYear(),
+          }),
         });
-
-        bracketContainer.style.display = "flex";
-        simulateBtn.style.display = "inline-block";
-        displayBracket(currentTournament);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        Swal.fire("✅ Success", data.message, "success");
+        displayTournament(data.tournament);
       } catch (err) {
-        Swal.fire({ icon: "error", title: "Error", text: err.message });
-      }
-    });
-
-    // Simulate next round
-simulateBtn.addEventListener("click", async () => {
-  try {
-    const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate-round", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    currentTournament = await handleResponse(res); // ✅ use res here
-    Swal.fire({
-      icon: "info",
-      title: "Round Simulated!",
-      text: "Next round results generated.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-    displayBracket(currentTournament);
-  } catch (err) {
-    Swal.fire({ icon: "error", title: "Error", text: err.message });
-  }
-});
-
-    // Display the tournament bracket visually
-    function displayBracket(tournament) {
-      bracketContainer.style.display = "flex";
-
-      const quarterDiv = document.getElementById("quarterFinals");
-      const semiDiv = document.getElementById("semiFinals");
-      const finalDiv = document.getElementById("final");
-
-      quarterDiv.innerHTML = "<h3>Quarter Finals</h3>";
-      semiDiv.innerHTML = "<h3>Semi Finals</h3>";
-      finalDiv.innerHTML = "<h3>Final</h3>";
-      championDiv.innerHTML = "";
-
-      tournament.matches.forEach((m) => {
-        const roundDiv =
-          m.round === "Quarter Final"
-            ? quarterDiv
-            : m.round === "Semi Final"
-            ? semiDiv
-            : finalDiv;
-
-        const home = m.homeTeam?.country || "Unknown";
-        const away = m.awayTeam?.country || "Unknown";
-        const winner = m.winner?.country || "Pending";
-        const commentary = m.commentary || "";
-
-        const matchEl = document.createElement("div");
-        matchEl.classList.add("match");
-        matchEl.innerHTML = `
-          <p>${home} vs ${away}</p>
-          <p>Score: ${m.homeScore} - ${m.awayScore}</p>
-          <p class="winner">Winner: ${winner}</p>
-          ${commentary ? `<p class="commentary">${commentary}</p>` : ""}
-        `;
-        roundDiv.appendChild(matchEl);
-      });
-
-      if (tournament.winner?.country) {
-        championDiv.innerHTML = `🏆 Champion: ${tournament.winner.country}`;
-        simulateBtn.style.display = "none";
+        Swal.fire("❌ Error", err.message, "error");
       }
     }
-  
+
+    async function simulateNextRound() {
+      try {
+        const res = await fetch(`${baseURL}/simulate-round`, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        Swal.fire("✅ Success", data.message, "success");
+        displayTournament(data.tournament);
+      } catch (err) {
+        Swal.fire("❌ Error", err.message, "error");
+      }
+    }
+
+    function displayTournament(tournament) {
+      const container = document.getElementById("tournamentResults");
+      container.innerHTML = `
+        <h2>${tournament.name} (${tournament.year})</h2>
+        <p><strong>Winner:</strong> ${tournament.winner?.country || "TBD"}</p>
+        <table border="1">
+          <thead>
+            <tr><th>Round</th><th>Home</th><th>Score</th><th>Away</th><th>Winner</th></tr>
+          </thead>
+          <tbody>
+            ${tournament.matches
+              .map(
+                (m) => `
+              <tr>
+                <td>${m.round}</td>
+                <td>${m.homeTeam.country}</td>
+                <td>${m.homeScore} - ${m.awayScore}</td>
+                <td>${m.awayTeam.country}</td>
+                <td>${m.winner?.country || "Draw"}</td>
+              </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    document.getElementById("startBtn").addEventListener("click", startTournament);
+    document.getElementById("nextBtn").addEventListener("click", simulateNextRound);
   </script>
 </body>
 </html>
+
+
 
 
 
