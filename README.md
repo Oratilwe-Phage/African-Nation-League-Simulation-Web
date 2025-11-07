@@ -64,8 +64,8 @@ It includes admin functionality for managing simulations and match results. Made
 - ✅ Admin panel for simulation and results control
 - ✅ Fully responsive user interface
 
-👨‍💻 Author
-African Nations League Simulation Project
-Developed by Oraphage and Team 🇿🇦
-📧 africannationsleague@gmail.com
+## 👨‍💻 Author
+**African Nations League Simulation Project**
+- Developed by Oratilwe Phage (Student Number: PHGORA001)
+- 📧African Nations League Simulation Project email address :africannationsleague@gmail.com
 
