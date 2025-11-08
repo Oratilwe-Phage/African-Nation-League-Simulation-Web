@@ -121,51 +121,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Simulate Match
-  simulateBtn.addEventListener("click", async () => {
-    const homeFederationId = homeSelect.value;
-    const awayFederationId = awaySelect.value;
+// Simulate Match
+simulateBtn.addEventListener("click", async () => {
+  const homeFederationId = homeSelect.value;
+  const awayFederationId = awaySelect.value;
 
-    if (!homeFederationId || !awayFederationId) {
-      return Swal.fire("Error", "Please select both federations.", "error");
-    }
+  if (!homeFederationId || !awayFederationId) {
+    return Swal.fire("Error", "Please select both federations.", "error");
+  }
 
-    if (homeFederationId === awayFederationId) {
-      return Swal.fire("Error", "Home and away teams cannot be the same.", "error");
-    }
+  if (homeFederationId === awayFederationId) {
+    return Swal.fire("Error", "Home and away teams cannot be the same.", "error");
+  }
 
-    try {
-      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/match/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ homeId: homeFederationId, awayId: awayFederationId }),
+  try {
+    const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/federations/simulate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ homeId: homeFederationId, awayId: awayFederationId }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Match Simulated!",
+        html: `
+          <p><strong>${data.match.homeTeam}</strong> ${data.match.homeScore} - ${data.match.awayScore} <strong>${data.match.awayTeam}</strong></p>
+          <p>Winner: <strong>${data.match.winner}</strong></p>
+          <p>Subscribers have been notified.</p>
+        `,
       });
 
-      const data = await res.json();
+      await loadAnalytics();
+      await loadMatchHistory();
 
-      if (res.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Match Simulated!",
-          html: `
-            <p><strong>${data.match.homeTeam}</strong> ${data.match.homeScore} - ${data.match.awayScore} <strong>${data.match.awayTeam}</strong></p>
-            <p>Winner: <strong>${data.match.winner}</strong></p>
-            <p>Subscribers have been notified.</p>
-          `,
-        });
-
-        await loadAnalytics();
-        await loadMatchHistory();
-
-      } else {
-        Swal.fire("Error", data.message || "Simulation failed.", "error");
-      }
-
-    } catch (err) {
-      console.error("Match error:", err);
-      Swal.fire("Server Error", "Unable to simulate match.", "error");
+    } else {
+      Swal.fire("Error", data.message || "Simulation failed.", "error");
     }
-  });
+
+  } catch (err) {
+    console.error("Match error:", err);
+    Swal.fire("Server Error", "Unable to simulate match.", "error");
+  }
+});
 
   // Initial Page Load
   loadFederations();
