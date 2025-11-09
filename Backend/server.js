@@ -24,24 +24,41 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ FIXED CORS CONFIGURATION
-app.use(
-  cors({
-    origin: [
-      "https://african-nation-league-simulation-web.onrender.com",
-      "https://african-nation-league-simulation-web-1.onrender.com",
-      "https://african-nation-league-simulation-backend.onrender.com",
-      "http://localhost:5000",
-      "http://localhost:5500",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// ✅ STEP 1: Define allowed origins (your frontend URLs)
+const allowedOrigins = [
+  "https://african-nation-league-simulation-web.onrender.com",
+  "https://african-nation-league-simulation-web-1.onrender.com",
+  "http://localhost:5500",
+  "http://localhost:3000",
+];
 
-// ✅ Fix Express 5 wildcard handling
-app.options(/.*/, cors());
+// ✅ STEP 2: Apply CORS *before any route*
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  // ✅ Handle preflight (OPTIONS) requests quickly
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+// ✅ You can still use cors() for safety
+app.use(cors());
 
 // ✅ Middleware
 app.use(express.json());
@@ -56,9 +73,6 @@ app.use("/api/subscribe", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// ✅ Serve static frontend (if any public assets)
-app.use(express.static(path.join(__dirname, "public")));
-
 // ✅ Health route
 app.get("/", (req, res) => {
   res.send("✅ African Nations League Backend is Running Successfully!");
@@ -69,6 +83,7 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 
 
 
