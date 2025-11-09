@@ -20,21 +20,24 @@ connectDB();
 
 const app = express();
 
-// For __dirname in ES modules
+// ✅ For ES Modules (__dirname equivalent)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ CORS setup
+// ✅ CORS setup (allow frontend URLs)
 app.use(
   cors({
     origin: [
       "https://african-nation-league-simulation-web.onrender.com",
       "https://african-nation-league-simulation-web-1.onrender.com",
+      "http://localhost:5000", // optional for local dev
+      "http://localhost:3000"
     ],
     credentials: true,
   })
 );
 
+// ✅ Middleware
 app.use(express.json());
 
 // ✅ API Routes
@@ -46,26 +49,29 @@ app.use("/api/subscribe", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// ✅ Static file serving (for frontend)
+// ✅ Serve static frontend files (the “Frontend”)
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Fallback for frontend routes (no wildcards)
-app.use((req, res, next) => {
+// ✅ Handle non-API routes → serve frontend (index.html fallback)
+app.get("*", (req, res, next) => {
   if (req.originalUrl.startsWith("/api/")) return next();
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✅ Error handler middleware (for API routes only)
-app.use("/api/error", errorHandler);
+// ✅ Global Error Handler
+app.use(errorHandler);
 
-// ✅ General error handler
+// ✅ Catch-all error handler (for unexpected errors)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: err.message || "Server Error" });
+  console.error("Server Error:", err);
+  res.status(500).json({ message: err.message || "Internal Server Error" });
 });
 
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
 
 
 
