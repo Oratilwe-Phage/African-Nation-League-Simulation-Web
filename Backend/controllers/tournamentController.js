@@ -83,7 +83,8 @@ export const getAllTournaments = async (req, res) => {
       .populate("winner", "country")
       .sort({ createdAt: -1 });
 
-    res.status(200).json(tournaments);
+    // ✅ Always return an array so frontend can map properly
+    res.status(200).json(Array.isArray(tournaments) ? tournaments : []);
   } catch (err) {
     console.error("Error in getAllTournaments:", err);
     res.status(500).json({ message: "Failed to fetch tournaments", error: err.message });
@@ -133,6 +134,7 @@ export const createTournament = async (req, res) => {
       name,
       year,
       matches: quarterFinals,
+      currentRound: "Quarter Final",
     });
 
     const populated = await Tournament.findById(tournament._id)
@@ -199,6 +201,7 @@ export const simulateNextRound = async (req, res) => {
     }
 
     tournament.matches.push(...newMatches);
+    tournament.currentRound = nextRound;
     await tournament.save();
 
     const updated = await Tournament.findById(tournament._id)
@@ -221,6 +224,7 @@ export const simulateNextRound = async (req, res) => {
     res.status(500).json({ message: "Error simulating next round", error: err.message });
   }
 };
+
 
 
 

@@ -8,11 +8,18 @@ import {
 
 const router = express.Router();
 
+// ✅ Get all tournaments
 router.get("/", getAllTournaments);
-router.post("/", createTournament);
+
+// ✅ Create a new tournament
+router.post("/create", createTournament);
+
+// ✅ Simulate the next round
 router.post("/simulate-round", simulateNextRound);
 
 export default router;
+
+
 
 
 
