@@ -40,8 +40,8 @@ app.use(
   })
 );
 
-// ✅ Allow preflight requests
-app.options("*", cors());
+// ✅ Fix Express 5 wildcard handling
+app.options(/.*/, cors());
 
 // ✅ Middleware
 app.use(express.json());
@@ -56,19 +56,20 @@ app.use("/api/subscribe", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// ✅ Serve static frontend
+// ✅ Serve static frontend (if any public assets)
 app.use(express.static(path.join(__dirname, "public")));
 
 // ✅ Health route
 app.get("/", (req, res) => {
-  res.send("✅ African Nations League Backend is Running");
+  res.send("✅ African Nations League Backend is Running Successfully!");
 });
 
-// ✅ Error handlers
+// ✅ Error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 
 
 
