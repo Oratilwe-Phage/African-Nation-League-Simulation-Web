@@ -2,12 +2,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tableBody = document.querySelector("#tournamentTable tbody");
   const simulateBtn = document.getElementById("simulateBtn");
 
+  // ✅ Use your backend Render service URL here
+ const API_BASE = "https://african-nation-league-simulation-web.onrender.com/api/tournament";
+
   async function loadTournaments() {
     try {
-      const res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament");
+      const res = await fetch(API_BASE);
       const data = await res.json();
 
-      // Accept both raw array or { success: true, tournaments: [...] }
       const tournaments = Array.isArray(data) ? data : data.tournaments || [];
 
       tableBody.innerHTML = tournaments
@@ -28,28 +30,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   simulateBtn.addEventListener("click", async () => {
     try {
-      // Try the canonical route first
-      let res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate-round", {
+      let res = await fetch(`${API_BASE}/simulate-round`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
 
-      // If route not found (404), try the alias route /simulate
       if (res.status === 404) {
-        res = await fetch("https://african-nation-league-simulation-web.onrender.com/api/tournament/simulate", {
+        res = await fetch(`${API_BASE}/simulate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
       }
 
       if (res.ok) {
-        // if the simulate endpoint returns JSON with { tournament }, we can optionally show that
         const data = await res.json().catch(() => null);
         alert("Next round simulated!");
-        // refresh table list
         await loadTournaments();
       } else {
-        // read message if possible
         const errData = await res.json().catch(() => null);
         const msg = (errData && (errData.message || (errData.success === false && errData.message))) || "Error simulating round.";
         alert(msg);
@@ -62,4 +59,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadTournaments();
 });
+
 
