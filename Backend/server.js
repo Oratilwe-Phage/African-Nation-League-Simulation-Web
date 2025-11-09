@@ -31,7 +31,7 @@ app.use(
       "https://african-nation-league-simulation-web.onrender.com",
       "https://african-nation-league-simulation-web-1.onrender.com",
       "http://localhost:5000",
-      "http://localhost:3000"
+      "http://localhost:3000",
     ],
     credentials: true,
   })
@@ -52,9 +52,8 @@ app.use("/api/players", playerRoutes);
 // ✅ Serve static files (frontend)
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Express 5-compatible fallback route
-app.get("/*", (req, res, next) => {
-  if (req.originalUrl.startsWith("/api/")) return next();
+// ✅ Express 5-compatible fallback route (regex-based)
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
