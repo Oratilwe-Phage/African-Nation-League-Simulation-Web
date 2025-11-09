@@ -20,25 +20,32 @@ connectDB();
 
 const app = express();
 
-// ✅ For ES Modules (__dirname)
+// For __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ CORS setup
+// ✅ FIXED CORS CONFIGURATION
 app.use(
   cors({
     origin: [
       "https://african-nation-league-simulation-web.onrender.com",
       "https://african-nation-league-simulation-web-1.onrender.com",
+      "https://african-nation-league-simulation-backend.onrender.com",
       "http://localhost:5000",
-      "http://localhost:3000",
+      "http://localhost:5500",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+// ✅ Allow preflight requests
+app.options("*", cors());
+
 // ✅ Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ✅ API Routes
 app.use("/api/federations", federationRoutes);
@@ -49,24 +56,20 @@ app.use("/api/subscribe", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/players", playerRoutes);
 
-// ✅ Serve static files (frontend)
+// ✅ Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Express 5-compatible fallback route (regex-based)
-app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// ✅ Health route
+app.get("/", (req, res) => {
+  res.send("✅ African Nations League Backend is Running");
 });
 
-// ✅ Global error handling
+// ✅ Error handlers
 app.use(errorHandler);
-app.use((err, req, res, next) => {
-  console.error("Server Error:", err);
-  res.status(500).json({ message: err.message || "Internal Server Error" });
-});
 
-// ✅ Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 
 
 
