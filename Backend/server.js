@@ -24,24 +24,32 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ FIXED CORS CONFIGURATION
+// ✅ FIXED CORS CONFIGURATION (with fallback)
+const allowedOrigins = [
+  "https://african-nation-league-simulation-web.onrender.com",
+  "https://african-nation-league-simulation-web-1.onrender.com",
+  "http://localhost:5000",
+  "http://localhost:5500",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://african-nation-league-simulation-web.onrender.com",
-      "https://african-nation-league-simulation-web-1.onrender.com",
-      "https://african-nation-league-simulation-backend.onrender.com",
-      "http://localhost:5000",
-      "http://localhost:5500",
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-// ✅ Fix Express 5 wildcard handling
-app.options(/.*/, cors());
+// ✅ Handle all preflight requests
+app.options("*", cors());
 
 // ✅ Middleware
 app.use(express.json());
@@ -67,8 +75,19 @@ app.get("/", (req, res) => {
 // ✅ Error handler
 app.use(errorHandler);
 
+// ✅ Fallback to add missing CORS headers (Render bug workaround)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`✅ Server running successfully on port ${PORT}`)
+);
+
 
 
 
